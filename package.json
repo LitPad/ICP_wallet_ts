@@ -25,11 +25,7 @@
     "@dfinity/principal": "^2.1.3",
     "@dfinity/utils": "^2.7.1",
     "@dolphjs/dolph": "1.3.22",
-    "cbor": "^10.0.3",
-    "crc-32": "^1.2.2",
-    "cryptr": "^6.3.0",
-    "isomorphic-fetch": "^3.0.0",
-    "tweetnacl": "^1.0.3"
+    "cryptr": "^6.3.0"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.62",
