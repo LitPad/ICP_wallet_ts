@@ -1,0 +1,7 @@
+port: 2500    
+jsonLimit: 2mb
+routing: 
+  base: "/api"
+database:
+  mongo:
+    url: mongodb://localhost:27017/litpad_wallet

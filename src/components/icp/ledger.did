@@ -1,0 +1,34 @@
+type AccountIdentifier = blob;
+type Subaccount = blob;
+type Tokens = record {
+    e8s: nat64;
+};
+type TimeStamp = record {
+    timestamp_nanos: nat64;
+};
+type TransferArgs = record {
+    memo: nat64;
+    amount: Tokens;
+    fee: Tokens;
+    from_subaccount: opt Subaccount;
+    to: AccountIdentifier;
+    created_at_time: opt TimeStamp;
+};
+type TransferError = variant {
+    TxTooOld: record { allowed_window_nanos: nat64; };
+    BadFee: record { expected_fee: Tokens; };
+    InsufficientFunds: record { balance: Tokens; };
+    TxCreatedInFuture: null;
+    TxDuplicate: record { duplicate_of: nat64; };
+};
+type TransferResult = variant {
+    Ok: nat64;
+    Err: TransferError;
+};
+type AccountBalanceArgs = record {
+    account: AccountIdentifier;
+};
+service : {
+    transfer: (TransferArgs) -> (TransferResult);
+    account_balance: (AccountBalanceArgs) -> (Tokens);
+}
