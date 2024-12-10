@@ -4,9 +4,12 @@ import {
   SuccessResponse,
   DRequest,
   DResponse,
+  TryCatchAsyncDec,
+  validateBodyMiddleware,
 } from "@dolphjs/dolph/common";
-import { Get, Post, Route } from "@dolphjs/dolph/decorators";
+import { Get, Post, Route, UseMiddleware } from "@dolphjs/dolph/decorators";
 import { WalletService } from "./wallet.service";
+import { CreateWalletDto, TransferDto } from "./wallet.dto";
 
 @Route("wallet")
 export class WalletController extends DolphControllerHandler<Dolph> {
@@ -25,12 +28,16 @@ export class WalletController extends DolphControllerHandler<Dolph> {
   }
 
   @Post()
+  @TryCatchAsyncDec
+  @UseMiddleware(validateBodyMiddleware(CreateWalletDto))
   async create(req: DRequest, res: DResponse) {
     await this.WalletService.create(req.body.username);
     SuccessResponse({ res, body: { message: "Wallet created successfully" } });
   }
 
   @Post("transfer")
+  @TryCatchAsyncDec
+  @UseMiddleware(validateBodyMiddleware(TransferDto))
   async transferICP(req: DRequest, res: DResponse) {
     const result = await this.WalletService.sendICP(
       req.body.username,

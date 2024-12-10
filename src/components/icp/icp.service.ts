@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
 } from "@dolphjs/dolph/common";
 import { Actor, HttpAgent, SignIdentity } from "@dfinity/agent";
-import { fromHexString, IDL, toHexString } from "@dfinity/candid";
+import { IDL } from "@dfinity/candid";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { AccountIdentifier } from "@dfinity/ledger-icp";
 import { Principal } from "@dfinity/principal";
@@ -22,7 +22,6 @@ import { customJSONStringify } from "@/shared/helpers/custom_helpers.helper";
 export class IcpService extends DolphServiceHandler<Dolph> {
   private readonly host: string = "https://ic0.app";
   private readonly ledgerCanisterId = "ryjl3-tyaaa-aaaaa-aaaba-cai";
-  private readonly indexCanisterId = "xrs4b-hiaaa-aaaar-qafoa-cai";
   private agent: HttpAgent;
   private ledgerActor: LedgerActor;
 

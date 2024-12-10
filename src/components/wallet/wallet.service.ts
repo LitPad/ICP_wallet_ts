@@ -2,11 +2,6 @@ import { DolphServiceHandler } from "@dolphjs/dolph/classes";
 import { Dolph, NotFoundException } from "@dolphjs/dolph/common";
 import { InjectMongo } from "@dolphjs/dolph/decorators";
 import { WalletModel, IICPModel } from "./wallet.model";
-import { Ed25519KeyIdentity } from "@dfinity/identity";
-import { Principal } from "@dfinity/principal";
-import crypto from "crypto";
-import { Actor, HttpAgent, Identity } from "@dfinity/agent";
-import { AccountIdentifier, LedgerCanister } from "@dfinity/ledger-icp";
 import { IcpService } from "../icp/icp.service";
 
 @InjectMongo("walletModel", WalletModel)
@@ -30,9 +25,6 @@ export class WalletService extends DolphServiceHandler<Dolph> {
       principal,
       user: username,
     });
-
-    console.log("principal: ", principal);
-    console.log("accountId: ", accountIdentifier);
 
     return {
       publicKey,
