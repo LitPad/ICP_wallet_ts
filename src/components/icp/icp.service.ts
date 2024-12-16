@@ -27,12 +27,22 @@ export class IcpService extends DolphServiceHandler<Dolph> {
 
   constructor(identity?: SignIdentity) {
     super("icpservice");
-    this.agent = new HttpAgent({ host: this.host, identity });
+    this.agent = new HttpAgent({
+      host: this.host,
+      identity,
+      fetchOptions: { timeout: 30000 },
+    });
+
     this.ledgerActor = this.createActor(
       this.ledgerCanisterId,
       idlFactory,
       this.agent
     ) as unknown as LedgerActor;
+  }
+
+  private async fetchKeys() {
+    const t = await this.agent.fetchRootKey();
+    console.log(t);
   }
 
   private createActor(
@@ -73,6 +83,10 @@ export class IcpService extends DolphServiceHandler<Dolph> {
     subaccount?: Uint8Array
   ): Promise<string> {
     try {
+      if (process.env.NODE_ENV !== "production") {
+        await this.fetchKeys();
+      }
+
       if (!LedgerHelpers.isValidPrincipal(principal)) {
         throw new BadRequestException("Principal is invalid");
       }
@@ -91,11 +105,12 @@ export class IcpService extends DolphServiceHandler<Dolph> {
 
       return BigInt(balance.e8s).toString();
     } catch (e: any) {
+      console.error("Balance retrieval error:", e);
       throw e;
     }
   }
 
-  public async sendIcp(request: any): Promise<string> {
+  public async sendIcp(request: any): Promise<any> {
     if (!request.from || !request.to || !request.amount) {
       throw new Error("Invalid transfer parameters");
     }
@@ -131,7 +146,7 @@ export class IcpService extends DolphServiceHandler<Dolph> {
       const result = await senderActor.transfer(transferArgs);
 
       if ("Ok" in result) {
-        return result.Ok.toString();
+        return { message: "The transaction was successful" };
       } else {
         throw new InternalServerErrorException(
           `Transfer failed: ${customJSONStringify(result.Err)}`

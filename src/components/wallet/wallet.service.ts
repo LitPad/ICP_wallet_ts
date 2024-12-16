@@ -3,6 +3,9 @@ import { Dolph, NotFoundException } from "@dolphjs/dolph/common";
 import { InjectMongo } from "@dolphjs/dolph/decorators";
 import { WalletModel, IICPModel } from "./wallet.model";
 import { IcpService } from "../icp/icp.service";
+import { LedgerHelpers } from "@/shared/helpers/ledger.helper";
+import { IIcp } from "../icp/icp.model";
+import { ICPDocument } from "./types";
 
 @InjectMongo("walletModel", WalletModel)
 export class WalletService extends DolphServiceHandler<Dolph> {
@@ -31,14 +34,46 @@ export class WalletService extends DolphServiceHandler<Dolph> {
     };
   }
 
-  async getBalance(username: string) {
-    const wallet = await this.walletModel.findOne({ user: username });
+  async getWalletByUsername(username: string) {
+    return this.getBalance(username, true);
+  }
+
+  async getBalance(
+    username: string,
+    returnWallet?: boolean
+  ): Promise<ICPDocument | number> {
+    let wallet = await this.walletModel.findOne({ user: username });
 
     if (!wallet) throw new NotFoundException("Wallet not found.");
 
     const balance = await this.IcpService.getICPBalance(wallet.principal);
 
-    return balance;
+    wallet.balance = LedgerHelpers.e8sToIcp(BigInt(parseFloat(balance)));
+
+    await wallet.save();
+
+    if (returnWallet) {
+      return wallet;
+    }
+
+    return wallet.balance;
+  }
+
+  async updateBalance(username: string, amount: string) {
+    let wallet = await this.walletModel.findOne({ user: username });
+
+    if (!wallet) throw new NotFoundException("Wallet not found");
+
+    wallet.balance = wallet.balance - parseFloat(amount);
+
+    wallet = await wallet.save();
+
+    return {
+      balance: wallet.balance,
+      publicKey: wallet.public_key,
+      accountId: wallet.account_id,
+      user: wallet.user,
+    };
   }
 
   async sendICP(username: string, receiver: string, amount: string) {
@@ -52,6 +87,6 @@ export class WalletService extends DolphServiceHandler<Dolph> {
       amount: amount,
     });
 
-    return result;
+    return { ...result, from: wallet.account_id, to: receiver };
   }
 }
