@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  backend:
+    build: ./
+    container_name: litpad_icp_wallet
+    ports:
+      - 2500:2500
+    depends_on:
+      - mongodb
+    networks:
+      - litpad_icp_wallet_network
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - litpad_icp_wallet_network
+
+networks:
+  litpad_icp_wallet_network:
+    driver: bridge

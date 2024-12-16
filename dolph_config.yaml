@@ -5,3 +5,4 @@ routing:
 database:
   mongo:
     url: mongodb://localhost:27017/litpad_wallet
+    # url: mongodb://mongodb:27017/litpad_wallet
