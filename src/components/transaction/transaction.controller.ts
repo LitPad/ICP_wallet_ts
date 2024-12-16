@@ -11,6 +11,7 @@ import { TransactionService } from "./transaction.service";
 import { WalletService } from "../wallet/wallet.service";
 import { ICPDocument } from "../wallet/types";
 import { AccessShield } from "@/shared/shields/access.shield";
+import { generateTokenForResponses } from "@/shared/helpers/token_generator.helper";
 
 const walletService = new WalletService();
 
@@ -30,6 +31,8 @@ export class TransactionController extends DolphControllerHandler<Dolph> {
       +req.query.page
     );
 
+    res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
+
     SuccessResponse({ res, body: transactions });
   }
 
@@ -46,6 +49,8 @@ export class TransactionController extends DolphControllerHandler<Dolph> {
       +req.query.page
     );
 
+    res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
+
     SuccessResponse({ res, body: transactions });
   }
 
@@ -55,6 +60,8 @@ export class TransactionController extends DolphControllerHandler<Dolph> {
     const transaction = await this.TransactionService.getTransaction(
       req.params.id
     );
+
+    res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
 
     SuccessResponse({
       res,

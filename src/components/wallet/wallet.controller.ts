@@ -18,6 +18,7 @@ import { WalletService } from "./wallet.service";
 import { CreateWalletDto, TransferDto } from "./wallet.dto";
 import { TransactionService } from "../transaction/transaction.service";
 import { AccessShield } from "@/shared/shields/access.shield";
+import { generateTokenForResponses } from "@/shared/helpers/token_generator.helper";
 
 @Shield(AccessShield)
 @Route("wallet")
@@ -32,6 +33,9 @@ export class WalletController extends DolphControllerHandler<Dolph> {
   @TryCatchAsyncDec
   async getBalance(req: DRequest, res: DResponse) {
     const balance = await this.WalletService.getBalance(req.params.username);
+
+    res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
+
     SuccessResponse({
       res,
       body: { balance },
@@ -43,6 +47,9 @@ export class WalletController extends DolphControllerHandler<Dolph> {
   @TryCatchAsyncDec
   async create(req: DRequest, res: DResponse) {
     await this.WalletService.create(req.body.username);
+
+    res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
+
     SuccessResponse({ res, body: { message: "Wallet created successfully" } });
   }
 
@@ -61,6 +68,8 @@ export class WalletController extends DolphControllerHandler<Dolph> {
       from: result.from,
       to: result.to,
     });
+
+    res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
 
     SuccessResponse({ res, body: transaction });
   }
