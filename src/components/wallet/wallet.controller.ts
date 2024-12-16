@@ -7,11 +7,19 @@ import {
   TryCatchAsyncDec,
   validateBodyMiddleware,
 } from "@dolphjs/dolph/common";
-import { Get, Post, Route, UseMiddleware } from "@dolphjs/dolph/decorators";
+import {
+  Get,
+  Post,
+  Route,
+  Shield,
+  UseMiddleware,
+} from "@dolphjs/dolph/decorators";
 import { WalletService } from "./wallet.service";
 import { CreateWalletDto, TransferDto } from "./wallet.dto";
 import { TransactionService } from "../transaction/transaction.service";
+import { AccessShield } from "@/shared/shields/access.shield";
 
+@Shield(AccessShield)
 @Route("wallet")
 export class WalletController extends DolphControllerHandler<Dolph> {
   private WalletService: WalletService;

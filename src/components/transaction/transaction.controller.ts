@@ -6,13 +6,15 @@ import {
   DResponse,
   TryCatchAsyncDec,
 } from "@dolphjs/dolph/common";
-import { Get, Route } from "@dolphjs/dolph/decorators";
+import { Get, Route, Shield } from "@dolphjs/dolph/decorators";
 import { TransactionService } from "./transaction.service";
 import { WalletService } from "../wallet/wallet.service";
 import { ICPDocument } from "../wallet/types";
+import { AccessShield } from "@/shared/shields/access.shield";
 
 const walletService = new WalletService();
 
+@Shield(AccessShield)
 @Route("transaction")
 export class TransactionController extends DolphControllerHandler<Dolph> {
   private TransactionService: TransactionService;
