@@ -43,8 +43,8 @@ export class WalletController extends DolphControllerHandler<Dolph> {
   }
 
   @Post()
-  @UseMiddleware(validateBodyMiddleware(CreateWalletDto))
   @TryCatchAsyncDec
+  @UseMiddleware(validateBodyMiddleware(CreateWalletDto))
   async create(req: DRequest, res: DResponse) {
     await this.WalletService.create(req.body.username);
 
@@ -54,8 +54,8 @@ export class WalletController extends DolphControllerHandler<Dolph> {
   }
 
   @Post("transfer")
-  @UseMiddleware(validateBodyMiddleware(TransferDto))
   @TryCatchAsyncDec
+  @UseMiddleware(validateBodyMiddleware(TransferDto))
   async transferICP(req: DRequest, res: DResponse) {
     const result = await this.WalletService.sendICP(
       req.body.username,

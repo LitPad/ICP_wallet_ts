@@ -14,7 +14,7 @@ export const AccessShield = async (
 ) => {
   const token = req.headers["access"] as string;
 
-  if (token)
+  if (!token)
     return next(new ForbiddenException("Provide a valid access token"));
 
   const heading = token.split(" ")[0];

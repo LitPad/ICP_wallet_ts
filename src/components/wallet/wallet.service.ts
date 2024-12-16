@@ -1,5 +1,9 @@
 import { DolphServiceHandler } from "@dolphjs/dolph/classes";
-import { Dolph, NotFoundException } from "@dolphjs/dolph/common";
+import {
+  BadRequestException,
+  Dolph,
+  NotFoundException,
+} from "@dolphjs/dolph/common";
 import { InjectMongo } from "@dolphjs/dolph/decorators";
 import { WalletModel, IICPModel } from "./wallet.model";
 import { IcpService } from "../icp/icp.service";
@@ -18,6 +22,9 @@ export class WalletService extends DolphServiceHandler<Dolph> {
   }
 
   async create(username: string) {
+    if (await this.walletModel.findOne({ user: username }))
+      throw new BadRequestException("This user has an ICP wallet already");
+
     const { accountIdentifier, encryptedPrivateKey, principal, publicKey } =
       await this.IcpService.createAccount();
 
