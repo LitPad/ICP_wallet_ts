@@ -31,7 +31,8 @@ export class TransactionService extends DolphServiceHandler<Dolph> {
     const transactions = await this.transactionModel
       .find({ from: accountId })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ time: -1 });
 
     const count = await this.transactionModel.countDocuments({
       from: accountId,
@@ -46,7 +47,8 @@ export class TransactionService extends DolphServiceHandler<Dolph> {
     const transactions = await this.transactionModel
       .find({})
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ time: -1 });
 
     const count = await this.transactionModel.countDocuments();
 

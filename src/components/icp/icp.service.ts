@@ -41,8 +41,7 @@ export class IcpService extends DolphServiceHandler<Dolph> {
   }
 
   private async fetchKeys() {
-    const t = await this.agent.fetchRootKey();
-    console.log(t);
+    await this.agent.fetchRootKey();
   }
 
   private createActor(
