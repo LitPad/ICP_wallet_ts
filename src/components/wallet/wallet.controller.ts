@@ -6,6 +6,7 @@ import {
   DResponse,
   TryCatchAsyncDec,
   validateBodyMiddleware,
+  NotFoundException,
 } from "@dolphjs/dolph/common";
 import {
   Get,
@@ -19,6 +20,7 @@ import { CreateWalletDto, TransferDto } from "./wallet.dto";
 import { TransactionService } from "../transaction/transaction.service";
 import { AccessShield } from "@/shared/shields/access.shield";
 import { generateTokenForResponses } from "@/shared/helpers/token_generator.helper";
+import { ICPDocument } from "./types";
 
 @Shield(AccessShield)
 @Route("wallet")
@@ -72,5 +74,18 @@ export class WalletController extends DolphControllerHandler<Dolph> {
     res.setHeader("Access", `Litpad ${generateTokenForResponses()}`);
 
     SuccessResponse({ res, body: transaction });
+  }
+
+  @Get(":username")
+  async getWallet(req: DRequest, res: DResponse) {
+    const { public_key, balance, account_id } =
+      (await this.WalletService.getWalletByUsername(
+        req.params.username
+      )) as ICPDocument;
+
+    if (!public_key)
+      throw new NotFoundException("Wallet not found for this user");
+
+    SuccessResponse({ res, body: { public_key, balance, account_id } });
   }
 }
