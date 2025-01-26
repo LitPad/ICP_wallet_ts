@@ -4,5 +4,5 @@ routing:
   base: "/api"
 database:
   mongo:
-    url: mongodb://localhost:27017/litpad_wallet
+    url: sensitive
     # url: mongodb://mongodb:27017/litpad_wallet
